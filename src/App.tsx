@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import ControlList from './components/ControlList/ControlList'
+import { ControlList } from './components/ControlList/ControlList'
 import { data } from './data/data'
 import { PagesSetter } from './components/PagesSetter/PagesSetter';
 
 function App() {
   const pagesSet: number[] = [5,10,15,20];
-  const [items, setItems] = useState<string[]>([]);
-  setItems(data)
+  const [items, setItems] = useState(data);
   const [itemsPerPage, setItemsPerPage] = useState<number>(pagesSet[3])
 
-
+  
   const handlePagesChange = (value: string) => {
     setItemsPerPage(Number(value))
+    setItems(items) //for now
   }
 
   return (
