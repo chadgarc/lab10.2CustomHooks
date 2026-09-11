@@ -14,5 +14,9 @@ export default defineConfig({
   build: {
     outDir: './docs',
     emptyOutDir: false,
-  }
+  },
+  server: {
+    host: true,
+    allowedHosts: ['codium.ec']
+  },
 })
