@@ -6,7 +6,7 @@ import { PagesSetter } from './components/PagesSetter/PagesSetter';
 function App() {
   const pagesSet: number[] = [5,10,15,20];
   const [items, setItems] = useState(data);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(pagesSet[0])
+  const [itemsPerPage, setItemsPerPage] = useState<number>(pagesSet[3])
 
   
   const handlePagesChange = (value: string) => {

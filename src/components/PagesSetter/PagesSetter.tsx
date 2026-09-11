@@ -8,7 +8,7 @@ export function PagesSetter({onChange}:PagesSetterProps){
         <>
             <section className="flex gap-5 items-center">
                 <p>Items per page:</p>
-                <select defaultValue={pagesSet[0]} className="select w-15"
+                <select defaultValue={pagesSet[3]} className="select w-15"
                 onChange={(e) => {
                     const selected = pagesSet.find(option => `${option}` === e.target.value);
                     if(selected) onChange(`${selected}`)
