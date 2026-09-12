@@ -1,51 +1,71 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import type { UsePaginationReturn } from '../types';
 
-export function usePagination(items: string[], itemsPerPage: number) {
-  const [currentPage, setCurrentPage] = useState(1);
+export function usePagination(
+  totalItems: number,
+  itemsPerPage: number = 10,
+  initialPage: number = 1
+): UsePaginationReturn {
+  // Calculate total pages (at least 1 page or 0 if 0 items)
+  const totalPages = Math.max(0, Math.ceil(totalItems / itemsPerPage));
 
-  // Calculate total of pages
-  const totalPages = Math.max(0, Math.ceil(items.length / itemsPerPage));
-  
-  // Fixign currentPage is not greater tha totalPages when changing elements per page
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-  
-  // Adjust currentPage if necessary (e.g., when itemsPerPage changes)
-  if (currentPage > totalPages && totalPages > 0) {
-    setCurrentPage(totalPages);
-  }
+  // Initialize and clamp initial page
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (totalPages === 0) return 1;
+    return Math.min(Math.max(1, initialPage), totalPages);
+  });
 
-  // Calculate the indices for the current items being displayed
-  const startIndex = Math.max(0, (safeCurrentPage - 1) * itemsPerPage);
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = items.slice(startIndex, endIndex);
+  // Adjust currentPage if totalPages changes (e.g. itemsPerPage or totalItems change)
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    } else if (totalPages > 0 && currentPage < 1) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
-  // set previous page
-  const goToPreviousPage = useCallback(() => {
-    setCurrentPage(prev => Math.max(1, prev - 1));
-  }, []);
+  const safeCurrentPage = totalPages === 0 ? 1 : Math.min(Math.max(1, currentPage), totalPages);
 
-  // Set next page
-  const goToNextPage = useCallback(() => {
+  // Calculate 0-based indices
+  const startIndex = totalItems === 0 ? 0 : (safeCurrentPage - 1) * itemsPerPage;
+  const endIndex = totalItems === 0 ? 0 : Math.min(startIndex + itemsPerPage - 1, totalItems - 1);
+
+  // Actual number of items on current page
+  const itemsOnCurrentPage = totalItems === 0 ? 0 : endIndex - startIndex + 1;
+
+  // Jump to specific page
+  const setPage = useCallback((pageNumber: number) => {
+    if (totalPages === 0) {
+      setCurrentPage(1);
+      return;
+    }
+    const clampedPage = Math.min(Math.max(1, pageNumber), totalPages);
+    setCurrentPage(clampedPage);
+  }, [totalPages]);
+
+  // Next page
+  const nextPage = useCallback(() => {
     setCurrentPage(prev => Math.min(totalPages, prev + 1));
   }, [totalPages]);
 
-  // set any page
-  const goToPage = useCallback((page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    } else if (totalPages === 0) {
-      setCurrentPage(1); // Si no hay items, ir a la página 1
-    }
-  }, [totalPages]);
+  // Previous page
+  const prevPage = useCallback(() => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  }, []);
+
+  const canNextPage = safeCurrentPage < totalPages;
+  const canPrevPage = safeCurrentPage > 1;
 
   return {
     currentPage: safeCurrentPage,
     totalPages,
     startIndex,
     endIndex,
-    currentItems,
-    goToPreviousPage,
-    goToNextPage,
-    goToPage,
+    itemsOnCurrentPage,
+    setPage,
+    nextPage,
+    prevPage,
+    canNextPage,
+    canPrevPage,
   };
 }
