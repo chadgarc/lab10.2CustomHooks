@@ -2,6 +2,8 @@
 
 A modern React application built with TypeScript, Vite, and DaisyUI demonstrating the creation and encapsulation of reusable logic using **Custom Hooks** (`usePagination` and `useDebounce`) alongside global state management with the **Context API**.
 
+You can visit the site [here](https://chadgarc.github.io/lab10.2CustomHooks/)
+
 ---
 
 ## 🌟 Overview & Objectives
