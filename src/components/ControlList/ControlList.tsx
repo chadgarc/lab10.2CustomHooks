@@ -2,6 +2,24 @@ import ShowItems from '../ShowItems/ShowItems'
 import type { ControlListProps } from '../../types'
 import { usePagination } from '../../hooks/usePagination'
 
+/**
+ * ControlList Component
+ * 
+ * @description
+ * Serves as the interactive controller for pagination. Consumes `usePagination`
+ * to manage active page, slice navigation, and page buttons.
+ * 
+ * Dependencies & Hooks:
+ * - Hook: `usePagination(items.length, itemsPerPage)`
+ *   - Receives total items count and batch size.
+ *   - Calculates `startIndex` and `endIndex` to slice the `items` array.
+ *   - Provides `canPrevPage` / `canNextPage` to disable buttons at boundaries.
+ * 
+ * Affected Components:
+ * - Child component: `ShowItems` (receives sliced `currentItems`).
+ * 
+ * @param {ControlListProps} props - Items array and itemsPerPage configuration.
+ */
 export function ControlList({ items, itemsPerPage }: ControlListProps) {
   const {
     currentPage,
@@ -16,7 +34,7 @@ export function ControlList({ items, itemsPerPage }: ControlListProps) {
     canPrevPage,
   } = usePagination(items.length, itemsPerPage)
 
-  // Obtener los elementos de la página actual utilizando los índices del hook
+  // Extract current slice using the 0-based indices from usePagination
   const currentItems = items.slice(startIndex, endIndex + 1)
 
   return (
