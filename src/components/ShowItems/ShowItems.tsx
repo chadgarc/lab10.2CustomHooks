@@ -5,7 +5,7 @@ function ShowItems({
 }: ShowItemsProps) {
   const items = itemList.map((item, index) => {
     return (
-      <div key={index}>{item}</div>
+      <div key={index}>{`${index + 1}. ${item}`}</div>
     );
   });
 
