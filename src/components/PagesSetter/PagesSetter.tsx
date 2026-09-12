@@ -1,21 +1,22 @@
-import type { PagesSetterProps } from "../../types";
+import { useDataContext } from "../../context/DataContext";
 
-export function PagesSetter({onChange}:PagesSetterProps){
+export function PagesSetter() {
+    const { itemsPerPage, setItemsPerPage, pagesSet } = useDataContext();
 
-    const pagesSet: number[] = [5,10,15,20];
-
-    return(
-        <>
-            <section className="flex gap-5 items-center">
-                <p>Items per page:</p>
-                <select defaultValue={pagesSet[3]} className="select w-15"
-                onChange={(e) => {
-                    const selected = pagesSet.find(option => `${option}` === e.target.value);
-                    if(selected) onChange(`${selected}`)
-                }}>
-                    {pagesSet.map(page => <option value={page}>{page}</option>)}
-                </select>
-            </section>
-        </>
-    )
+    return (
+        <section className="flex gap-5 items-center">
+        <p>Items per page:</p>
+        <select
+            value={itemsPerPage}
+            className="select w-20"
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+        >
+            {pagesSet.map((page) => (
+            <option key={page} value={page}>
+                {page}
+            </option>
+            ))}
+        </select>
+        </section>
+    );
 }
